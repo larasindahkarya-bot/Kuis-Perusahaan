@@ -431,7 +431,7 @@
 
   <div id="nameIntro" class="card rules-intro">
     <div class="label">Sebelum Mulai</div>
-    <p class="q-text">Isi Data Peserta</p>
+    <p class="q-text">Isi Data Karyawan</p>
     <div class="name-form">
       <label class="field-label" for="participantName">Nama Lengkap</label>
       <input type="text" id="participantName" class="field-input" placeholder="Tulis nama lengkap kamu" autocomplete="off">
@@ -688,7 +688,7 @@ function submitResultToSheet(){
     headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(payload)
   }).then(()=>{
-    statusEl.textContent = 'Hasil kamu sudah dikirim ke panitia. Terima kasih!';
+    statusEl.textContent = 'Hasil kuismu sudah tersimpan. Terima kasih!';
     statusEl.classList.add('ok');
   }).catch(()=>{
     statusEl.textContent = 'Gagal mengirim hasil — periksa koneksi internet kamu, lalu screenshot skor ini.';
