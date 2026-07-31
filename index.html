@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis Pengetahuan Perusahaan — PT Laras Indah Karya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Archivo:wght@400;500;600;700;800&family=Archivo+Expanded:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0B0C;
+    --panel:#151517;
+    --panel-2:#1D1D20;
+    --gold:#C9A227;
+    --gold-soft:#E8C766;
+    --gold-line: rgba(201,162,39,.35);
+    --cream:#F3EEE1;
+    --mebe-yellow:#F5B800;
+    --mebe-yellow-soft:#FFD966;
+    --mebe-line: rgba(245,184,0,.35);
+    --ok:#5FBF7A;
+    --bad:#E2564E;
+    --muted: rgba(243,238,225,.55);
+    --radius: 4px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(201,162,39,.10), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 110% 10%, rgba(245,184,0,.08), transparent 60%),
+      var(--ink);
+    color:var(--cream);
+    font-family:'Archivo', sans-serif;
+    min-height:100vh;
+    padding: 32px 18px 60px;
+  }
+  .wrap{max-width:820px; margin:0 auto;}
+
+  /* ---------- Header / crest ---------- */
+  header{
+    text-align:center;
+    margin-bottom:28px;
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color: var(--muted);
+    margin-bottom:14px;
+  }
+  .crest{
+    display:inline-flex;
+    align-items:center;
+    gap:14px;
+    padding: 14px 26px;
+    border: 1px solid var(--gold-line);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(201,162,39,.08), transparent);
+    margin-bottom:18px;
+    transition: border-color .5s ease, background .5s ease;
+  }
+  .crest.mebe-mode{
+    border-color: var(--mebe-line);
+    background: linear-gradient(180deg, rgba(245,184,0,.09), transparent);
+  }
+  .crest-mark{
+    width:34px; height:34px;
+    flex-shrink:0;
+    position:relative;
+  }
+  .crest-mark svg{width:100%;height:100%;display:block;}
+  .crest-text h1{
+    font-family:'Playfair Display', serif;
+    font-weight:600;
+    font-size: 20px;
+    margin:0;
+    letter-spacing:.01em;
+    color: var(--gold-soft);
+    transition: color .5s ease;
+  }
+  .crest.mebe-mode .crest-text h1{ color: var(--mebe-yellow-soft); }
+  .crest-text p{
+    margin:2px 0 0;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color: var(--muted);
+  }
+  h2.title{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size: clamp(26px, 5vw, 36px);
+    line-height:1.15;
+    margin: 0 0 8px;
+  }
+  header .sub{
+    color: var(--muted);
+    font-size:14px;
+    max-width:480px;
+    margin: 0 auto;
+    line-height:1.6;
+  }
+
+  /* ---------- Mode toggle (two brand plaques) ---------- */
+  .mode-select{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap:10px;
+    margin: 28px 0 8px;
+  }
+  @media (max-width:560px){ .mode-select{grid-template-columns: 1fr; } }
+  .mode-btn{
+    font-family:'Archivo Expanded', sans-serif;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    padding: 16px 10px;
+    border-radius: var(--radius);
+    cursor:pointer;
+    background: var(--panel);
+    color: var(--cream);
+    border:1px solid rgba(243,238,225,.14);
+    transition: all .2s ease;
+    text-align:center;
+  }
+  .mode-btn small{
+    display:block;
+    font-family:'Archivo', sans-serif;
+    font-weight:400;
+    text-transform:none;
+    letter-spacing:0;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:5px;
+  }
+  .mode-btn.homelux:hover, .mode-btn.homelux.active{ border-color:var(--gold); background: linear-gradient(180deg, rgba(201,162,39,.16), rgba(201,162,39,.03)); color:var(--gold-soft); }
+  .mode-btn.mebelux:hover, .mode-btn.mebelux.active{ border-color:var(--mebe-yellow); background: linear-gradient(180deg, rgba(245,184,0,.16), rgba(245,184,0,.03)); color:var(--mebe-yellow-soft); }
+  .mode-btn.mixed:hover, .mode-btn.mixed.active{ border-color: var(--cream); background: rgba(243,238,225,.08); }
+
+  /* ---------- Progress ---------- */
+  .progress-row{
+    display:flex; align-items:center; gap:12px;
+    margin: 26px 0 6px;
+    font-size:12px;
+    color: var(--muted);
+    letter-spacing:.04em;
+  }
+  .progress-track{
+    flex:1;
+    height:2px;
+    background: rgba(243,238,225,.14);
+    position:relative;
+  }
+  .progress-fill{
+    height:100%;
+    background: var(--gold);
+    transition: width .4s ease;
+  }
+  .progress-fill.mebe{ background: var(--mebe-yellow); }
+  .score-pill{
+    font-family:'Archivo Expanded', sans-serif;
+    font-weight:700;
+    color: var(--cream);
+    white-space:nowrap;
+  }
+
+  /* ---------- Timer ---------- */
+  .timer-row{
+    display:flex; align-items:center; gap:10px;
+    margin: 10px 0 0;
+  }
+  .timer-track{
+    flex:1;
+    height:5px;
+    border-radius:3px;
+    background: rgba(243,238,225,.10);
+    overflow:hidden;
+  }
+  .timer-fill{
+    height:100%;
+    width:100%;
+    background: var(--gold);
+    transition: width 1s linear, background .3s ease;
+  }
+  .timer-fill.mebe{ background: var(--mebe-yellow); }
+  .timer-fill.warn{ background: var(--bad) !important; }
+  .timer-num{
+    font-family:'Archivo Expanded', sans-serif;
+    font-weight:800;
+    font-size:12px;
+    color: var(--muted);
+    min-width:22px;
+    text-align:right;
+  }
+  .timer-num.warn{ color: var(--bad); }
+
+  /* ---------- Question card ---------- */
+  .card{
+    background: var(--panel);
+    border: 1px solid rgba(243,238,225,.10);
+    border-radius: var(--radius);
+    padding: 30px 26px;
+    margin-top:16px;
+  }
+  .card .tag{
+    display:inline-block;
+    font-size:10px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    padding: 4px 9px;
+    border-radius: 3px;
+    margin-bottom:16px;
+    border:1px solid var(--gold-line);
+    color: var(--gold-soft);
+  }
+  .card .tag.mebe{ border-color: var(--mebe-line); color: var(--mebe-yellow-soft); }
+  .q-text{
+    font-family:'Playfair Display', serif;
+    font-weight:600;
+    font-size: clamp(18px, 3vw, 22px);
+    line-height:1.4;
+    margin: 0 0 22px;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .opt{
+    text-align:left;
+    background: var(--panel-2);
+    border: 1px solid rgba(243,238,225,.10);
+    color: var(--cream);
+    padding: 14px 16px;
+    border-radius: var(--radius);
+    font-family:'Archivo', sans-serif;
+    font-size:14.5px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .opt:hover:not(:disabled){ border-color: rgba(243,238,225,.32); }
+  .opt .letter{
+    font-family:'Archivo Expanded', sans-serif;
+    font-weight:700;
+    font-size:11px;
+    color: var(--muted);
+    width:20px; height:20px;
+    border:1px solid rgba(243,238,225,.25);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .opt:disabled{ cursor:default; }
+  .opt.correct{ border-color: var(--ok); background: rgba(95,191,122,.12); }
+  .opt.correct .letter{ border-color: var(--ok); color: var(--ok); }
+  .opt.wrong{ border-color: var(--bad); background: rgba(226,86,78,.12); }
+  .opt.wrong .letter{ border-color: var(--bad); color: var(--bad); }
+  .opt.dim{ opacity:.45; }
+
+  .explain{
+    margin-top:18px;
+    padding: 14px 16px;
+    background: rgba(243,238,225,.05);
+    border-left: 2px solid var(--gold);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size:13.5px;
+    line-height:1.6;
+    color: var(--muted);
+    display:none;
+  }
+  .explain.mebe{ border-left-color: var(--mebe-yellow); }
+  .explain.show{ display:block; }
+  .explain b{ color: var(--cream); }
+
+  .next-row{
+    margin-top:22px;
+    display:flex;
+    justify-content:flex-end;
+  }
+  .next-btn{
+    font-family:'Archivo Expanded', sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    background: var(--gold);
+    color: #17140A;
+    border:none;
+    padding: 12px 22px;
+    border-radius: var(--radius);
+    cursor:pointer;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .2s ease, background .2s ease;
+  }
+  .next-btn.mebe{ background: var(--mebe-yellow); }
+  .next-btn.ready{ opacity:1; pointer-events:auto; }
+  .next-btn:hover{ filter:brightness(1.08); }
+
+  /* ---------- Results ---------- */
+  .result{
+    text-align:center;
+    padding: 44px 26px;
+  }
+  .result .big{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-size: 52px;
+    color: var(--gold-soft);
+    margin: 6px 0 0;
+  }
+  .result .big.mebe{ color: var(--mebe-yellow-soft); }
+  .result .label{
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .result .verdict{
+    margin: 18px 0 26px;
+    font-size:15px;
+    color: var(--cream);
+    max-width: 420px;
+    margin-left:auto; margin-right:auto;
+    line-height:1.6;
+  }
+  .retry-btn{
+    font-family:'Archivo Expanded', sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    background: transparent;
+    border:1px solid var(--gold-line);
+    color: var(--gold-soft);
+    padding: 12px 24px;
+    border-radius: var(--radius);
+    cursor:pointer;
+    margin:0 6px;
+  }
+  .retry-btn.mebe{ border-color: var(--mebe-line); color: var(--mebe-yellow-soft); }
+  .retry-btn:hover{ background: rgba(243,238,225,.06); }
+
+  footer{
+    text-align:center;
+    margin-top:40px;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color: rgba(243,238,225,.28);
+  }
+
+  .hidden{ display:none !important; }
+
+  .session-intro{ text-align:center; padding: 40px 26px; }
+  .session-intro .label{
+    font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:10px;
+  }
+  .session-intro .q-text{ margin-bottom:10px; }
+  .intro-desc{ color: var(--muted); font-size:14px; line-height:1.6; max-width:400px; margin: 0 auto 26px; }
+  .session-intro .next-row{ justify-content:center; }
+
+  .rules-intro{ padding: 34px 30px; }
+  .rules-intro .label{
+    font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; text-align:center;
+  }
+  .rules-intro .q-text{ text-align:center; margin-bottom:22px; }
+  .rules-list{
+    list-style:none;
+    padding:0; margin:0 0 26px;
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .rules-list li{
+    position:relative;
+    padding-left:22px;
+    font-size:13.5px;
+    line-height:1.65;
+    color: var(--muted);
+  }
+  .rules-list li b{ color: var(--cream); }
+  .rules-list li::before{
+    content:"—";
+    position:absolute; left:0; top:0;
+    color: var(--gold);
+  }
+  .rules-intro .next-row{ justify-content:center; }
+
+  .name-form{ max-width:360px; margin:0 auto; text-align:left; }
+  .field-label{
+    display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    color: var(--muted); margin: 16px 0 6px;
+  }
+  .field-label:first-child{ margin-top:0; }
+  .field-input{
+    width:100%; background: var(--panel-2); border:1px solid rgba(243,238,225,.16);
+    color: var(--cream); padding:12px 14px; border-radius: var(--radius);
+    font-family:'Archivo', sans-serif; font-size:14.5px;
+  }
+  .field-input:focus{ outline:none; border-color: var(--gold); }
+  .field-hint{ font-size:12px; color: var(--bad); margin: 10px 0 0; display:none; }
+  .field-hint.show{ display:block; }
+
+  .submit-status{
+    margin-top:18px; font-size:13px; color: var(--muted); line-height:1.6;
+  }
+  .submit-status.ok{ color: var(--ok); }
+  .submit-status.err{ color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Employee Knowledge Series</div>
+    <div class="crest" id="crest">
+      <div class="crest-mark" id="crestMark"></div>
+      <div class="crest-text">
+        <h1 id="crestTitle">Homelux &amp; Mebelux</h1>
+        <p>PT Laras Indah Karya</p>
+      </div>
+    </div>
+    <h2 class="title">Seberapa kenal kamu<br>dengan bisnis kita?</h2>
+    <p class="sub">Kuis singkat seputar Homelux Developer &amp; Contractor dan Mebelux Furniture — dua unit bisnis di bawah PT Laras Indah Karya.</p>
+  </header>
+
+  <div id="nameIntro" class="card rules-intro">
+    <div class="label">Sebelum Mulai</div>
+    <p class="q-text">Isi Data Peserta</p>
+    <div class="name-form">
+      <label class="field-label" for="participantName">Nama Lengkap</label>
+      <input type="text" id="participantName" class="field-input" placeholder="Tulis nama lengkap kamu" autocomplete="off">
+      <label class="field-label" for="participantDept">Divisi / Departemen (opsional)</label>
+      <input type="text" id="participantDept" class="field-input" placeholder="Contoh: Marketing, Produksi, dll" autocomplete="off">
+      <p class="field-hint" id="nameHint">Nama wajib diisi supaya hasil kuismu bisa direkap.</p>
+    </div>
+    <div class="next-row">
+      <button class="next-btn ready" id="nameContinueBtn">Lanjut →</button>
+    </div>
+  </div>
+
+  <div id="rulesIntro" class="card rules-intro hidden">
+    <div class="label">Sebelum Mulai</div>
+    <p class="q-text">Aturan Pengerjaan Kuis</p>
+    <ul class="rules-list">
+      <li><b>3 sesi berurutan</b> — Sesi 1 Homelux (10 soal), Sesi 2 Mebelux (10 soal), Sesi 3 Campuran &amp; Sinergi (5 soal). Total 25 soal.</li>
+      <li>Soal yang muncul <b>diacak dari bank soal yang lebih besar</b> — tiap kali kuis dikerjakan (termasuk oleh orang lain), kombinasi soalnya bisa berbeda.</li>
+      <li>Tiap soal punya <b>batas waktu 20 detik</b>. Kalau waktu habis sebelum menjawab, soal otomatis dihitung salah.</li>
+      <li>Jawaban <b>tidak bisa diubah</b> setelah dipilih, dan tidak bisa kembali ke soal sebelumnya.</li>
+      <li>Skor direkap dan ditampilkan di akhir, setelah ketiga sesi selesai.</li>
+      <li>Kerjakan sendiri tanpa membuka company profile — hasilnya mencerminkan pemahamanmu yang sebenarnya, bukan kecepatan mencari jawaban.</li>
+    </ul>
+    <div class="next-row">
+      <button class="next-btn ready" id="rulesStartBtn">Saya Mengerti, Mulai →</button>
+    </div>
+  </div>
+
+  <div id="sessionIntro" class="card session-intro hidden">
+    <div class="label">Bersiap</div>
+    <p class="q-text" id="introTitle">Sesi 1 — Homelux</p>
+    <p class="intro-desc" id="introDesc">10 soal seputar Homelux Developer &amp; Contractor.</p>
+    <div class="next-row">
+      <button class="next-btn ready" id="startBtn">Mulai →</button>
+    </div>
+  </div>
+
+  <div id="quizArea" class="hidden">
+    <div class="progress-row">
+      <span id="qCounter">Soal 1 / 10</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <span class="score-pill" id="scorePill">Skor: 0</span>
+    </div>
+
+    <div class="timer-row">
+      <div class="timer-track"><div class="timer-fill" id="timerFill"></div></div>
+      <span class="timer-num" id="timerNum">20</span>
+    </div>
+
+    <div class="card">
+      <span class="tag" id="qTag">HOMELUX</span>
+      <p class="q-text" id="qText">Pertanyaan</p>
+      <div class="options" id="qOptions"></div>
+      <div class="explain" id="qExplain"></div>
+      <div class="next-row">
+        <button class="next-btn" id="nextBtn">Lanjut →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden">
+    <div class="card result">
+      <div class="label">Hasil Akhir</div>
+      <div class="big" id="resultScore">0/10</div>
+      <p class="verdict" id="resultVerdict"></p>
+      <p class="submit-status" id="submitStatus">Menyimpan hasil...</p>
+      <button class="retry-btn" id="retryBtn">Ulangi dari Sesi 1</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ================= CREST ICONS ================= */
+const crestIcons = {
+  homelux: `<svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="1" y="1" width="32" height="32" stroke="#C9A227" stroke-width="1.2"/>
+    <path d="M17 6L27 14V28H21V20H13V28H7V14L17 6Z" stroke="#E8C766" stroke-width="1.3" fill="none"/>
+  </svg>`,
+  mebelux: `<svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="1" y="1" width="32" height="32" stroke="#F5B800" stroke-width="1.2"/>
+    <path d="M8 24V12H14V16H20V12H26V24" stroke="#FFD966" stroke-width="1.3" fill="none"/>
+    <path d="M8 24H26" stroke="#FFD966" stroke-width="1.3"/>
+  </svg>`,
+  mixed: `<svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="1" y="1" width="15" height="32" stroke="#C9A227" stroke-width="1.1"/>
+    <rect x="18" y="1" width="15" height="32" stroke="#F5B800" stroke-width="1.1"/>
+  </svg>`
+};
+
+/* ================= QUESTION BANK ================= */
+const homeluxQ = [
+  {q:"Apa nama lengkap badan hukum di balik brand Homelux?", opts:["PT. Laras Indah Karya","PT. Homelux Sejahtera","CV. Mahakarya Properti","PT. Prestige Konstruksi"], a:0,
+   e:"Homelux Developer & Contractor beroperasi di bawah <b>PT. Laras Indah Karya</b> — badan hukum yang sama yang menaungi Mebelux Furniture."},
+  {q:"Homelux memposisikan dirinya sebagai spesialis apa?", opts:["Renovasi rumah subsidi","Luxury Home Specialist","Apartemen sewa","Ruko komersial"], a:1,
+   e:"Homelux memposisikan diri sebagai <b>Luxury Home Specialist</b>, fokus pada hunian mewah dan berkelas untuk pasar high-end."},
+  {q:"Apa yang membuat Homelux berbeda dari developer/kontraktor pada umumnya, menurut company profile-nya?", opts:["Hanya menjual desain tanpa membangun","Integrasi penuh sebagai developer sekaligus main contractor dalam satu atap","Hanya menerima proyek renovasi kecil","Fokus properti komersial, bukan hunian"], a:1,
+   e:"Keunggulan utamanya adalah <b>integrasi satu atap</b> sebagai developer kawasan cluster premium sekaligus pelaksana kontraktor utama (main contractor), sehingga eksekusi lapangan presisi sesuai rancangan."},
+  {q:"Manakah yang termasuk salah satu dari 3 Nilai Inti (Core Values) Homelux?", opts:["Speed & Volume","Integritas Mutlak","Diskon Maksimal","Ekspansi Cepat"], a:1,
+   e:"Tiga nilai inti Homelux: <b>Prestige & Luxury</b>, <b>Integritas Mutlak</b>, dan <b>Inovasi Desain Berkelas</b>."},
+  {q:"Ada berapa tahap dalam alur kerja terstruktur Homelux (dari survei lokasi hingga konstruksi fisik)?", opts:["4 tahap","5 tahap","7 tahap","10 tahap"], a:2,
+   e:"Alur kerja Homelux terdiri dari <b>7 tahap</b>: Survei Lokasi & Pengukuran → Uji Sondir → Perancangan Tata Letak Ruang → Perencanaan Struktur & Teknis → Estimasi Biaya/RAB → Jadwal Kerja & Kurva-S → Tahap Konstruksi Fisik."},
+  {q:"Apa fungsi 'Uji Sondir' dalam alur kerja Homelux?", opts:["Mengecek harga material terbaru","Menganalisis daya dukung tanah untuk fondasi","Survei kepuasan pelanggan","Mengukur luas tanah untuk sertifikat"], a:1,
+   e:"Uji Sondir / pengujian tanah dilakukan untuk <b>menganalisis daya dukung tanah</b> demi merancang fondasi yang paling kokoh dan aman dari risiko pergeseran."},
+  {q:"Alat apa yang digunakan Homelux untuk memantau progres pengerjaan proyek dari minggu ke minggu?", opts:["Kurva-S","Gantt Chart Digital","Aplikasi Absensi","QR Code Proyek"], a:0,
+   e:"Homelux menggunakan <b>Kurva-S</b> untuk memetakan target pengerjaan proyek dari minggu ke minggu."},
+  {q:"Di kota mana kantor & workshop Homelux berada?", opts:["Semarang","Yogyakarta","Surakarta (Solo)","Bandung"], a:2,
+   e:"Kantor & workshop berada di Jl. Doktor Moewardi No.17a Manahan, Kec. Banjarsari, Kota <b>Surakarta</b>, Jawa Tengah."},
+  {q:"Manakah dari berikut ini yang merupakan mitra/vendor material yang disebutkan dalam company profile Homelux?", opts:["Kohler & TOTO","Nike & Adidas","Samsung & LG","Toyota & Honda"], a:0,
+   e:"Homelux bekerja sama dengan jaringan vendor kelas dunia seperti <b>Kohler, TOTO, Grohe, Roca</b>, dan lainnya untuk material sanitary serta bangunan."},
+  {q:"Dokumen apa yang dihasilkan pada 'Tahap 4: Perencanaan Struktur & Teknis'?", opts:["Kontrak jual beli tanah","Blueprint dan Detail Engineering Design (DED)","Laporan keuangan bulanan","Sertifikat kepemilikan"], a:1,
+   e:"Tahap ini menghasilkan <b>blueprint</b> serta <b>Detail Engineering Design (DED)</b> sebagai panduan presisi untuk pembangunan fisik."},
+  {q:"Menurut logo perusahaannya, Homelux berdiri (EST.) pada tahun berapa?", opts:["2006","2010","2015","2018"], a:0,
+   e:"Logo Homelux mencantumkan <b>EST. 2006</b> sebagai tahun berdirinya."},
+  {q:"Apa istilah yang dipakai Homelux untuk kawasan hunian di lokasi strategis dengan potensi pertumbuhan nilai investasi tinggi?", opts:["Sunrise Property","Golden Estate","Prime Cluster","Elite Township"], a:0,
+   e:"Misi Homelux menyebut istilah <b>Sunrise Property</b> untuk kawasan hunian eksklusif berpotensi investasi tinggi."},
+  {q:"Apa kepanjangan dari PBG yang disebut dalam misi Homelux terkait transparansi proses hukum?", opts:["Perizinan Bangunan Gedung","Peraturan Bangunan Gedung","Pengesahan Bangunan Global","Perizinan Bangunan Grosir"], a:0,
+   e:"PBG = <b>Perizinan Bangunan Gedung</b>, salah satu proses hukum yang dijamin transparansinya oleh Homelux."},
+  {q:"Dokumen legal apa yang disebutkan sebagai tahap akhir proses hukum jual-beli properti Homelux?", opts:["Akta Jual Beli (AJB)","Sertifikat Hak Milik langsung","Izin Mendirikan Bangunan lama","Akta Notaris Pendirian"], a:0,
+   e:"Misi Homelux menyebut proses hukum berjalan dari PBG hingga penyelesaian <b>Akta Jual Beli (AJB)</b> yang aman."},
+  {q:"Berapa nomor layanan hotline (WhatsApp) resmi Homelux?", opts:["0818-34-34-36","0818 838 384","0812-1111-2222","0821-5555-6666"], a:0,
+   e:"Layanan hotline WhatsApp Homelux adalah <b>0818-34-34-36</b>."},
+  {q:"Apa alamat email resmi untuk kontak proyek Homelux?", opts:["projekhomelux@gmail.com","info@homelux.co.id","homelux.project@yahoo.com","admin@laraskarya.id"], a:0,
+   e:"Email resmi kontak proyek Homelux adalah <b>projekhomelux@gmail.com</b>."},
+  {q:"Vendor mana yang dikenal dengan tagline Ahlinya Baja Ringan dalam daftar mitra Homelux?", opts:["Kencana","Alexindo","Eterna","Kanmuri"], a:0,
+   e:"<b>Kencana</b> tercantum dengan tagline Ahlinya Baja Ringan pada daftar mitra terpercaya Homelux."},
+  {q:"Merek cat apa yang tercantum sebagai salah satu mitra terpercaya Homelux?", opts:["Dulux","Nippon Paint","Avian","Propan"], a:0,
+   e:"<b>Dulux</b> tercantum sebagai salah satu mitra vendor cat pada daftar mitra terpercaya Homelux."},
+  {q:"Merek apa yang logonya mencantumkan tulisan ITALY dalam daftar mitra Homelux?", opts:["Paloma","Kohler","Roca","Grohe"], a:0,
+   e:"Logo <b>Paloma</b> pada daftar mitra Homelux mencantumkan tulisan ITALY."},
+  {q:"Apa nama akun Instagram & TikTok resmi Homelux?", opts:["Homelux.id","homeluxofficial","homelux_id","luxuryhomehomelux"], a:0,
+   e:"Akun Instagram dan TikTok resmi Homelux adalah <b>Homelux.id</b>."},
+  {q:"Pada bagian 'Keahlian Utama Kami', manakah yang termasuk salah satu dari 4 pilar keunggulan bisnis Homelux?", opts:["Spesialis Rumah Mewah","Harga Termurah se-Kota","Pengerjaan Tercepat","Renovasi Massal"], a:0,
+   e:"4 pilar keahlian Homelux: <b>Spesialis Rumah Mewah</b>, Desain Klasik Modern yang Elegan, Material Berkualitas Tinggi, dan Tim Profesional & Berpengalaman."},
+  {q:"Gaya desain apa yang disebut sebagai salah satu keahlian utama Homelux, memadukan kemegahan klasik dengan sentuhan modern minimalis?", opts:["Desain Klasik Modern yang Elegan","Desain Industrial Kasar","Desain Skandinavia Murni","Desain Futuristik Ekstrem"], a:0,
+   e:"Salah satu pilar keahlian Homelux adalah <b>Desain Klasik Modern yang Elegan</b> — memadukan arsitektur klasik megah dengan gaya modern minimalis."},
+  {q:"Fitur canggih apa yang disebut dalam nilai inti 'Inovasi Desain Berkelas' Homelux, sebagai contoh fungsionalitas ruang modern?", opts:["Sistem smart home","Panel surya otomatis","Asisten suara AI","Drone pemantau proyek"], a:0,
+   e:"Nilai inti Inovasi Desain Berkelas memadukan estetika arsitektur mahakarya dengan fungsionalitas ruang canggih seperti <b>sistem smart home</b>."},
+  {q:"Menurut company profile-nya, budaya 'Safety First' Homelux menjamin operasional pembangunan berjalan seperti apa?", opts:["Tepat waktu secara mulus dan menjaga reputasi legalitas korporasi","Lebih murah tanpa asuransi pekerja","Lebih cepat dengan mengurangi tahap pengawasan","Tanpa perlu pengawas kualitas di lapangan"], a:0,
+   e:"Budaya Safety First menjamin operasional pembangunan berjalan <b>tepat waktu secara mulus</b>, menjaga reputasi legalitas korporasi, serta memastikan fondasi kerja yang aman dan profesional."}
+];
+
+const mebeluxQ = [
+  {q:"Mebelux Furniture bergerak di bidang apa?", opts:["Jual beli properti","Konsultasi desain interior & manufaktur furnitur kustom premium","Distribusi bahan bangunan","Jasa cleaning service"], a:1,
+   e:"Mebelux Furniture bergerak di bidang <b>konsultasi desain interior dan manufaktur furnitur kustom premium</b>, dari konsultasi hingga instalasi."},
+  {q:"Berapa lama garansi resmi yang diberikan Mebelux untuk produknya?", opts:["6 bulan","1 tahun","2 tahun","5 tahun"], a:2,
+   e:"Mebelux memberikan garansi resmi selama <b>2 tahun</b> sebagai jaminan durabilitas produk."},
+  {q:"Teknik finishing apa yang disebutkan dalam company profile Mebelux untuk hasil akhir yang halus?", opts:["Powder coating & galvanis","High-Pressure Laminate (HPL) & Cat Duco premium","Vernis kayu tradisional","Anodizing aluminium"], a:1,
+   e:"Mebelux menggunakan <b>HPL (High-Pressure Laminate)</b> dengan pengeleman bertekanan tinggi dan <b>Cat Duco premium</b> untuk kehalusan permukaan."},
+  {q:"Ada berapa tahap dalam alur kerja operasional (Operational Workflow) Mebelux?", opts:["3 tahap","4 tahap","6 tahap","7 tahap"], a:1,
+   e:"Alur kerja Mebelux terdiri dari <b>4 tahap</b>: Konsultasi & Survei Lokasi → Visualisasi Desain 3D & Gambar Kerja → Manufaktur & Fabrikasi Workshop → Pengiriman, Instalasi Presisi, & Serah Terima."},
+  {q:"Apa yang dilakukan pada tahap 'Pengiriman, Instalasi Presisi, & Serah Terima'?", opts:["Survei ulang lokasi dari awal","Joint inspection bersama klien sebelum serah terima resmi","Negosiasi ulang harga produk","Pembuatan desain 3D pertama kali"], a:1,
+   e:"Sebelum penandatanganan serah terima resmi, dilakukan <b>joint inspection</b> (pemeriksaan bersama) langsung dengan klien, lalu kartu garansi 2 tahun diserahkan."},
+  {q:"Manakah yang TERMASUK salah satu dari 4 'Nilai Unggul & Komitmen' Mebelux?", opts:["Harga Termurah se-Indonesia","Custom Design","Pengiriman Sameday","Tanpa Garansi, Harga Lebih Murah"], a:1,
+   e:"Empat nilai unggul Mebelux: <b>Premium Material Only</b>, <b>2 Tahun Garansi Resmi</b>, <b>Custom Design</b>, dan <b>Tenaga Ahli Kompeten</b>."},
+  {q:"Apa jenis proyek yang disebutkan sudah ditangani Mebelux dalam pengalamannya?", opts:["Hanya proyek residensial", "Residensial, perkantoran, dan komersial","Hanya proyek pemerintahan","Hanya ekspor furnitur"], a:1,
+   e:"Mebelux berpengalaman menangani proyek <b>residensial, perkantoran, dan komersial</b>."},
+  {q:"Siapa yang melakukan proses produksi furnitur Mebelux?", opts:["Vendor luar negeri","Tenaga pengrajin terampil di workshop mandiri dengan pengawasan mutu berkala","Sistem otomatis penuh tanpa pengawasan manusia","Subkontraktor tanpa quality control"], a:1,
+   e:"Produksi dilakukan sepenuhnya di <b>workshop mandiri</b> oleh tenaga pengrajin terampil dengan <b>pengawasan mutu (QC) berkala</b>."},
+  {q:"Apa tagline / kutipan yang mewakili filosofi Mebelux dalam company profile-nya?", opts:["Speed is everything","Karena Setiap Ruang Layak Menjadi Representasi Terbaik Pemiliknya","Termurah dan Tercepat","Satu untuk Semua"], a:1,
+   e:"Filosofi Mebelux: setiap ruang merupakan representasi karakter dan gaya hidup pemiliknya, sehingga layak menjadi <b>representasi terbaik pemiliknya</b>."},
+  {q:"Apa yang dihasilkan pada tahap 'Visualisasi Desain 3D & Gambar Kerja'?", opts:["Faktur pajak proyek","3D rendering, gambar teknik detail arsitektural, dan RAB final","Sertifikat garansi produk","Kontrak kerja karyawan"], a:1,
+   e:"Tahap ini menghasilkan <b>3D rendering</b> untuk gambaran tata letak & material, lalu gambar teknik detail arsitektural dan <b>RAB final</b> setelah disetujui klien."},
+  {q:"Apa nama akun Instagram resmi Mebelux Furniture?", opts:["mebeluxfurniture","homelux.id","mebelux.official","laraskarya_id"], a:0,
+   e:"Akun Instagram resmi Mebelux Furniture adalah <b>mebeluxfurniture</b>."},
+  {q:"Berapa nomor hotline WhatsApp resmi Mebelux Furniture?", opts:["0818 838 384","0818-34-34-36","0812-9999-1111","0821-7777-3333"], a:0,
+   e:"Hotline WhatsApp resmi Mebelux Furniture adalah <b>0818 838 384</b> — berbeda dari nomor hotline Homelux."},
+  {q:"Apa istilah misi Mebelux yang berkaitan dengan orisinalitas dan fungsionalitas desain?", opts:["Inovasi Desain Tanpa Batas","Desain Cepat Saji","Kreativitas Tanpa Arah","Desain Sesuai Tren Musiman"], a:0,
+   e:"Misi pertama Mebelux adalah <b>Inovasi Desain Tanpa Batas</b>: menghasilkan konsep desain interior yang orisinal, fungsional, dan adaptif."},
+  {q:"Apa istilah misi Mebelux yang berkaitan dengan penggunaan material dan craftsmanship?", opts:["Kualitas Fabrikasi Tanpa Kompromi","Produksi Massal Efisien","Bahan Termurah Terbaik","Speed Manufacturing"], a:0,
+   e:"Misi kedua Mebelux adalah <b>Kualitas Fabrikasi Tanpa Kompromi</b>: material premium & craftsmanship tingkat tinggi."},
+  {q:"Apa istilah misi Mebelux yang berkaitan dengan pengalaman kerja sama sejak konsultasi hingga instalasi?", opts:["Pelayanan Terintegrasi dan Profesional","Layanan Sekali Jalan","Konsultasi Gratis Tanpa Batas","Pengiriman Ekspres"], a:0,
+   e:"Misi ketiga Mebelux adalah <b>Pelayanan Terintegrasi dan Profesional</b>: pengalaman kerja sama yang transparan dan akurat dari awal hingga akhir."},
+  {q:"Apa istilah misi Mebelux yang berkaitan dengan hubungan jangka panjang dan garansi produk?", opts:["Jaminan Purnajual Unggul","Garansi Seumur Hidup Otomatis","Diskon Pembelian Berikutnya","Layanan Sekali Beli"], a:0,
+   e:"Misi keempat Mebelux adalah <b>Jaminan Purnajual Unggul</b>: membina hubungan jangka panjang melalui garansi produk yang nyata."},
+  {q:"Dimensi apa saja yang diukur tim teknis Mebelux secara komprehensif pada tahap Konsultasi & Survei Lokasi?", opts:["Panjang, lebar, tinggi, elevasi dinding, hingga kelistrikan","Hanya panjang dan lebar ruangan","Warna dinding dan jenis lantai saja","Jumlah pintu dan jendela saja"], a:0,
+   e:"Tim teknis Mebelux mengukur dimensi ruangan secara komprehensif: <b>panjang, lebar, tinggi, elevasi dinding, hingga kelistrikan</b>."},
+  {q:"Menurut visinya, Mebelux ingin menjadi perusahaan desain interior & manufaktur furniture yang diakui secara apa di Indonesia?", opts:["Nasional","Internasional","Regional Jawa Tengah saja","Tidak disebutkan dalam profil"], a:0,
+   e:"Visi Mebelux menyebut ingin diakui secara <b>nasional</b> atas inovasi desain, ketelitian kualitas produk, serta pelayanan prima."},
+  {q:"Apa nama website resmi Mebelux Furniture?", opts:["mebelux.id","homelux.id","mebeluxfurniture.com","laraskarya.co.id"], a:0,
+   e:"Website resmi Mebelux Furniture adalah <b>mebelux.id</b>."}
+];
+
+const mixedQ = [
+  {q:"Homelux dan Mebelux sama-sama berada di bawah naungan badan hukum apa?", opts:["PT. Laras Indah Karya","PT. Homelux Mebel Sejahtera","Dua PT yang berbeda dan tidak berelasi","Yayasan Karya Mandiri"], a:0,
+   e:"Keduanya berada di bawah <b>PT. Laras Indah Karya</b> — Homelux di sisi developer/kontraktor, Mebelux di sisi furniture custom."},
+  {q:"Apa perbedaan utama fokus bisnis Homelux vs Mebelux?", opts:["Homelux fokus interior, Mebelux fokus struktur bangunan","Homelux fokus developer & kontraktor rumah mewah, Mebelux fokus desain interior & manufaktur furnitur custom","Keduanya menjual produk yang identik","Homelux hanya di Solo, Mebelux hanya di Jakarta"], a:1,
+   e:"<b>Homelux</b> = developer & kontraktor rumah mewah (dari lahan sampai bangunan jadi). <b>Mebelux</b> = konsultasi desain interior & manufaktur furnitur custom (mengisi ruang setelah bangunan jadi)."},
+  {q:"Di alamat kantor mana Homelux dan Mebelux beroperasi?", opts:["Alamat yang berbeda jauh di dua kota", "Jl. Doktor Moewardi 17a Manahan, Banjarsari, Surakarta — alamat yang sama", "Homelux di Solo, Mebelux di Semarang", "Tidak disebutkan dalam profil manapun"], a:1,
+   e:"Kedua unit bisnis tercatat menggunakan alamat kantor & workshop yang sama di <b>Jl. Doktor Moewardi No.17a Manahan, Kec. Banjarsari, Kota Surakarta</b>."},
+  {q:"Kalau seorang klien ingin bangun rumah dari nol SAMPAI isi interior lengkap, unit bisnis mana saja yang relevan digunakan berurutan?", opts:["Mebelux dulu, baru Homelux","Homelux dulu (bangun struktur), lalu Mebelux (desain & furnitur interior)","Cukup salah satu saja, keduanya identik","Tidak relevan, keduanya beda industri total"], a:1,
+   e:"Alur logisnya: <b>Homelux</b> menangani pembangunan struktur rumah dari survei lahan sampai konstruksi fisik, lalu <b>Mebelux</b> masuk untuk desain interior & furnitur custom mengisi ruang."},
+  {q:"Kedua unit bisnis ini sama-sama menekankan aspek apa dalam proses kerja mereka?", opts:["Proses cepat tanpa banyak tahapan","Alur kerja terstruktur bertahap dengan quality control","Harga termurah tanpa kompromi kualitas","Fokus ekspor ke luar negeri"], a:1,
+   e:"Homelux (7 tahap kerja, Safety First, Kurva-S) dan Mebelux (4 tahap kerja, QC berkala) sama-sama menonjolkan <b>alur kerja terstruktur & pengawasan mutu</b>, bukan sekadar coba-coba di lapangan."},
+  {q:"Baik Homelux maupun Mebelux sama-sama menonjolkan penggunaan bahan seperti apa dalam company profile-nya?", opts:["Material premium/kelas dunia yang diseleksi ketat","Material daur ulang seadanya","Material lokal tanpa standar kualitas","Material termurah yang tersedia"], a:0,
+   e:"Homelux menekankan material dari vendor kelas dunia yang terverifikasi, sementara Mebelux menekankan prinsip Premium Material Only — keduanya konsisten mengutamakan <b>kualitas material</b>."},
+  {q:"Mebelux memberi garansi resmi 2 tahun sebagai bentuk purnajual. Apa istilah yang dipakai Homelux dalam misinya untuk komitmen serupa di bidang layanan setelah penjualan?", opts:["Layanan purna jual premium yang responsif","Garansi seumur hidup","Tidak ada layanan purnajual","Diskon pembelian berikutnya"], a:0,
+   e:"Misi Homelux menyebut akan menghadirkan <b>layanan purna jual premium yang responsif</b> — sejalan dengan semangat garansi resmi 2 tahun dari Mebelux."},
+  {q:"Baik dalam alur kerja Homelux maupun Mebelux, tahap pertama yang dilakukan sebelum eksekusi fisik/produksi dimulai adalah?", opts:["Survei lokasi / konsultasi awal","Langsung produksi massal","Penagihan pembayaran penuh di muka","Pembongkaran bangunan lama"], a:0,
+   e:"Homelux memulai dari Survei Lokasi & Pengukuran, Mebelux memulai dari Konsultasi Eksklusif & Survei Lokasi — keduanya sama-sama diawali <b>survei/konsultasi</b> sebelum eksekusi."},
+  {q:"Baik Homelux maupun Mebelux menghasilkan dokumen visual/teknis tertentu sebelum eksekusi fisik dimulai. Apa bentuk dokumen itu?", opts:["Gambar teknik/3D rendering & RAB","Kontrak kerja karyawan baru","Laporan pajak tahunan","Sertifikat halal produk"], a:0,
+   e:"Homelux menghasilkan blueprint & DED, Mebelux menghasilkan 3D rendering, gambar teknik, dan RAB final — keduanya membuat <b>dokumen visual/teknis</b> sebelum konstruksi/produksi fisik dimulai."}
+];
+
+/* ================= SESSIONS ================= */
+const sessions = [
+  { key:'homelux', name:'Sesi 1 — Homelux', desc:'10 soal seputar Homelux Developer & Contractor: nilai inti, alur kerja, hingga mitra material.', questions: null },
+  { key:'mebelux', name:'Sesi 2 — Mebelux', desc:'10 soal seputar Mebelux Furniture: garansi, material, dan alur produksi custom furniture.', questions: null },
+  { key:'mixed', name:'Sesi 3 — Campuran & Sinergi', desc:'5 soal yang menghubungkan Homelux dan Mebelux sebagai satu ekosistem bisnis.', questions: null }
+];
+
+/* ================= STATE ================= */
+let sessionIdx = 0;
+let currentSet = [];
+let idx = 0;
+let score = 0;          // skor sesi berjalan
+let totalScore = 0;     // skor total semua sesi
+let totalQuestions = 0;
+let answered = false;
+let timerInterval = null;
+let timeLeft = 0;
+const TIME_PER_QUESTION = 20; // detik
+let participantName = '';
+let participantDept = '';
+let sessionBreakdown = []; // {name, score, total} per sesi
+
+/* ================= KIRIM HASIL KE GOOGLE SHEET ================= */
+// Ganti URL di bawah ini dengan URL Web App hasil deploy Google Apps Script kamu.
+// Lihat panduan setup di file terpisah yang disertakan.
+const RESULTS_WEBHOOK_URL = 'GANTI_DENGAN_URL_GOOGLE_APPS_SCRIPT';
+
+function submitResultToSheet(){
+  const statusEl = document.getElementById('submitStatus');
+  if(!RESULTS_WEBHOOK_URL || RESULTS_WEBHOOK_URL === 'GANTI_DENGAN_URL_GOOGLE_APPS_SCRIPT'){
+    statusEl.textContent = 'Belum terhubung ke penyimpanan hasil (mode uji coba).';
+    statusEl.classList.add('err');
+    return;
+  }
+  statusEl.textContent = 'Menyimpan hasil...';
+  statusEl.className = 'submit-status';
+
+  const payload = {
+    nama: participantName,
+    divisi: participantDept,
+    waktu: new Date().toLocaleString('id-ID'),
+    totalSkor: totalScore,
+    totalSoal: totalQuestions,
+    rincian: sessionBreakdown
+  };
+
+  fetch(RESULTS_WEBHOOK_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    statusEl.textContent = 'Hasil kamu sudah dikirim ke panitia. Terima kasih!';
+    statusEl.classList.add('ok');
+  }).catch(()=>{
+    statusEl.textContent = 'Gagal mengirim hasil — periksa koneksi internet kamu, lalu screenshot skor ini.';
+    statusEl.classList.add('err');
+  });
+}
+
+const sessionIntro = document.getElementById('sessionIntro');
+const rulesIntro = document.getElementById('rulesIntro');
+const quizArea = document.getElementById('quizArea');
+const resultArea = document.getElementById('resultArea');
+const crest = document.getElementById('crest');
+const crestMark = document.getElementById('crestMark');
+const crestTitle = document.getElementById('crestTitle');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+const SESSION_SIZE = { homelux: 10, mebelux: 10, mixed: 5 };
+
+function drawQuestions(pool, count){
+  return shuffle(pool).slice(0, count);
+}
+
+sessions[0].questions = drawQuestions(homeluxQ, SESSION_SIZE.homelux);
+sessions[1].questions = drawQuestions(mebeluxQ, SESSION_SIZE.mebelux);
+sessions[2].questions = drawQuestions(mixedQ, SESSION_SIZE.mixed);
+
+function showSessionIntro(){
+  const s = sessions[sessionIdx];
+  currentSet = s.questions;
+  idx = 0; score = 0;
+  updateCrest(s.key);
+  document.getElementById('introTitle').textContent = s.name;
+  document.getElementById('introDesc').textContent = s.desc;
+  rulesIntro.classList.add('hidden');
+  quizArea.classList.add('hidden');
+  resultArea.classList.add('hidden');
+  sessionIntro.classList.remove('hidden');
+}
+
+document.getElementById('nameContinueBtn').addEventListener('click', ()=>{
+  const nameVal = document.getElementById('participantName').value.trim();
+  const hint = document.getElementById('nameHint');
+  if(!nameVal){
+    hint.classList.add('show');
+    return;
+  }
+  hint.classList.remove('show');
+  participantName = nameVal;
+  participantDept = document.getElementById('participantDept').value.trim();
+  document.getElementById('nameIntro').classList.add('hidden');
+  document.getElementById('rulesIntro').classList.remove('hidden');
+});
+
+document.getElementById('rulesStartBtn').addEventListener('click', ()=>{
+  showSessionIntro();
+});
+
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  sessionIntro.classList.add('hidden');
+  quizArea.classList.remove('hidden');
+  renderQuestion();
+});
+
+function updateCrest(mode){
+  crestMark.innerHTML = crestIcons[mode] || crestIcons.homelux;
+  if(mode==='homelux'){ crest.classList.remove('mebe-mode'); crestTitle.textContent='Homelux Developer & Contractor'; }
+  else if(mode==='mebelux'){ crest.classList.add('mebe-mode'); crestTitle.textContent='Mebelux Furniture'; }
+  else { crest.classList.remove('mebe-mode'); crestTitle.textContent='Homelux & Mebelux'; }
+}
+
+function brandOfQuestion(q){
+  const s = sessions[sessionIdx];
+  return s.key;
+}
+
+// halaman dibuka menampilkan layar aturan (rulesIntro) terlebih dahulu — lihat HTML default state
+
+function renderQuestion(){
+  answered = false;
+  const q = currentSet[idx];
+  const brand = brandOfQuestion(q);
+  const isMebe = brand==='mebelux';
+
+  document.getElementById('qCounter').textContent = `Soal ${idx+1} / ${currentSet.length}`;
+  document.getElementById('scorePill').textContent = `Skor: ${score}`;
+  const pct = (idx/currentSet.length)*100;
+  const fill = document.getElementById('progressFill');
+  fill.style.width = pct+'%';
+  fill.classList.toggle('mebe', isMebe);
+
+  const tag = document.getElementById('qTag');
+  tag.textContent = brand==='homelux' ? 'HOMELUX' : brand==='mebelux' ? 'MEBELUX' : 'GABUNGAN';
+  tag.classList.toggle('mebe', isMebe);
+
+  document.getElementById('qText').textContent = q.q;
+
+  const optsWrap = document.getElementById('qOptions');
+  optsWrap.innerHTML = '';
+  const letters = ['A','B','C','D'];
+
+  // shuffle options but keep correct index mapping
+  const order = shuffle(q.opts.map((_,i)=>i));
+  order.forEach((origIdx, pos)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="letter">${letters[pos]}</span><span>${q.opts[origIdx]}</span>`;
+    btn.addEventListener('click', ()=>selectAnswer(btn, origIdx, q.a, isMebe));
+    optsWrap.appendChild(btn);
+  });
+
+  const explain = document.getElementById('qExplain');
+  explain.classList.remove('show');
+  explain.classList.toggle('mebe', isMebe);
+  explain.innerHTML = q.e;
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.classList.remove('ready');
+  nextBtn.classList.toggle('mebe', isMebe);
+  nextBtn.textContent = (idx===currentSet.length-1) ? 'Lihat Hasil →' : 'Lanjut →';
+
+  startTimer(isMebe);
+}
+
+function startTimer(isMebe){
+  clearInterval(timerInterval);
+  timeLeft = TIME_PER_QUESTION;
+  const fill = document.getElementById('timerFill');
+  const num = document.getElementById('timerNum');
+  fill.style.transition = 'none';
+  fill.style.width = '100%';
+  fill.classList.toggle('mebe', isMebe);
+  fill.classList.remove('warn');
+  num.classList.remove('warn');
+  num.textContent = timeLeft;
+  // force reflow so the transition re-applies next tick
+  void fill.offsetWidth;
+  fill.style.transition = 'width 1s linear, background .3s ease';
+
+  timerInterval = setInterval(()=>{
+    timeLeft--;
+    num.textContent = Math.max(timeLeft,0);
+    fill.style.width = (timeLeft/TIME_PER_QUESTION*100)+'%';
+    if(timeLeft <= 5){
+      fill.classList.add('warn');
+      num.classList.add('warn');
+    }
+    if(timeLeft <= 0){
+      clearInterval(timerInterval);
+      if(!answered) timeUp();
+    }
+  }, 1000);
+}
+
+function timeUp(){
+  answered = true;
+  document.querySelectorAll('#qOptions .opt').forEach(o=>{
+    o.disabled = true;
+    const txt = o.querySelector('span:last-child').textContent;
+    const q = currentSet[idx];
+    if(txt === q.opts[q.a]){ o.classList.add('correct'); }
+    else { o.classList.add('dim'); }
+  });
+  document.getElementById('qExplain').classList.add('show');
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.classList.add('ready');
+}
+
+function selectAnswer(btn, chosenIdx, correctIdx, isMebe){
+  if(answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+  const allOpts = document.querySelectorAll('.opt');
+  allOpts.forEach(o=>{o.disabled=true; o.classList.add('dim');});
+
+
+  const q = currentSet[idx];
+  const correctText = q.opts[correctIdx];
+  document.querySelectorAll('#qOptions .opt').forEach(o=>{
+    const txt = o.querySelector('span:last-child').textContent;
+    o.classList.remove('dim');
+    if(txt === correctText){ o.classList.add('correct'); }
+    else { o.classList.add('dim'); }
+  });
+
+  if(chosenIdx === correctIdx){
+    score++;
+  } else {
+    btn.classList.remove('dim');
+    btn.classList.add('wrong');
+  }
+
+  document.getElementById('scorePill').textContent = `Skor: ${score}`;
+  document.getElementById('qExplain').classList.add('show');
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.classList.add('ready');
+  nextBtn.classList.toggle('mebe', isMebe);
+}
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  if(!answered) return;
+  if(idx < currentSet.length-1){
+    idx++;
+    renderQuestion();
+  } else {
+    // sesi ini selesai — catat ke total lalu lanjut sesi berikutnya atau tampilkan hasil akhir
+    totalScore += score;
+    totalQuestions += currentSet.length;
+    sessionBreakdown.push({ nama: sessions[sessionIdx].name, skor: score, total: currentSet.length });
+    if(sessionIdx < sessions.length-1){
+      sessionIdx++;
+      showSessionIntro();
+    } else {
+      showResult();
+    }
+  }
+});
+
+function showResult(){
+  quizArea.classList.add('hidden');
+  sessionIntro.classList.add('hidden');
+  resultArea.classList.remove('hidden');
+  updateCrest('mixed');
+
+  document.getElementById('resultScore').textContent = `${totalScore}/${totalQuestions}`;
+  document.getElementById('resultScore').classList.remove('mebe');
+
+  const pct = totalScore/totalQuestions;
+  let verdict;
+  if(pct === 1) verdict = "Sempurna! Kamu benar-benar paham luar-dalam soal Homelux & Mebelux.";
+  else if(pct >= 0.8) verdict = "Mantap — pemahamanmu soal bisnis perusahaan sudah kuat.";
+  else if(pct >= 0.5) verdict = "Lumayan, tapi masih ada beberapa hal penting yang perlu dipelajari ulang.";
+  else verdict = "Yuk baca lagi company profile-nya — banyak detail penting yang masih terlewat.";
+  document.getElementById('resultVerdict').textContent = verdict;
+
+  submitResultToSheet();
+}
+
+document.getElementById('retryBtn').addEventListener('click', ()=>{
+  sessionIdx = 0; totalScore = 0; totalQuestions = 0; sessionBreakdown = [];
+  sessions[0].questions = drawQuestions(homeluxQ, SESSION_SIZE.homelux);
+  sessions[1].questions = drawQuestions(mebeluxQ, SESSION_SIZE.mebelux);
+  sessions[2].questions = drawQuestions(mixedQ, SESSION_SIZE.mixed);
+  showSessionIntro();
+});
+
+</script>
+</body>
+</html>
