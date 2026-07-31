@@ -661,11 +661,11 @@ let sessionBreakdown = []; // {name, score, total} per sesi
 /* ================= KIRIM HASIL KE GOOGLE SHEET ================= */
 // Ganti URL di bawah ini dengan URL Web App hasil deploy Google Apps Script kamu.
 // Lihat panduan setup di file terpisah yang disertakan.
-const RESULTS_WEBHOOK_URL = 'GANTI_DENGAN_URL_GOOGLE_APPS_SCRIPT';
+const RESULTS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwQEDMMnP8iPApITlSMq-blLAiyCgW8aStJDHFo_c5m44pVYhsupLaOMUivqdJ-KPc/exec';
 
 function submitResultToSheet(){
   const statusEl = document.getElementById('submitStatus');
-  if(!RESULTS_WEBHOOK_URL || RESULTS_WEBHOOK_URL === 'GANTI_DENGAN_URL_GOOGLE_APPS_SCRIPT'){
+  if(!RESULTS_WEBHOOK_URL || RESULTS_WEBHOOK_URL === 'https://script.google.com/macros/s/AKfycbwQEDMMnP8iPApITlSMq-blLAiyCgW8aStJDHFo_c5m44pVYhsupLaOMUivqdJ-KPc/exec'){
     statusEl.textContent = 'Belum terhubung ke penyimpanan hasil (mode uji coba).';
     statusEl.classList.add('err');
     return;
